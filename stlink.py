@@ -48,7 +48,10 @@ def find_probe_and_sn():
     stlink_probe_list = dict()
 
     try:
-        probe_list = subprocess.check_output(["ST-LINK_CLI.exe", "-List"]).decode().splitlines()
+        stlink_output = subprocess.run(
+            ["ST-LINK_CLI.exe", "-List"],
+            check=False,
+            stdout=subprocess.PIPE).stdout.decode().splitlines()
     except FileNotFoundError:
         print('ST-LINK_CLI.exe is missing! Put in the same directory or add path into PATH.')
         return None
