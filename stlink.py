@@ -45,7 +45,6 @@ def find_probe_and_sn():
     Raises:
         FileNotFoundError: ST-Link Utility CLI isn't present in the current directory or on PATH.
     """
-    stlink_probe_list = dict()
 
     try:
         stlink_output = subprocess.run(
@@ -60,18 +59,13 @@ def find_probe_and_sn():
         print('No ST-LINK detected!')
         return None
 
-    for line in probe_list:
+    stlink_probe_list = dict()
+    for i, line in enumerate(stlink_output):
         if re.search('^ST-LINK Probe', line):
-            probe_number = re.findall('([0-9]+):', line)[0]
-            serial_number = re.findall('SN: ([A-Z0-9]+)', probe_list[probe_list.index(line) + 1])[0]
+            stlink_probe_list['probe'] = re.findall('([0-9]+):', line)[0]
+            stlink_probe_list['sn'] = re.findall('SN: ([A-Z0-9]+)', stlink_output[i + 1])[0]
 
-            stlink_probe_list['sn'] = serial_number
-            stlink_probe_list['probe'] = probe_number
-
-    if not stlink_probe_list:
-        return None
-    else:
-        return stlink_probe_list
+    return stlink_probe_list
 
 
 def find_stlink_com_and_sn(stlink_list):
