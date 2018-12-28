@@ -43,7 +43,7 @@ def find_probe_and_sn():
         Example -> stlink_list = [{'sn': 213245154sdf, 'probe': 0}, {'sn': 21abc544sdf, 'probe': 1}]
 
     Raises:
-        subprocess.CalledProcessError: ST-Link Utility CLI isn't present in the current directory.
+        FileNotFoundError: ST-Link Utility CLI isn't present in the current directory or on PATH.
     """
     stlink_probe_list = dict()
 
