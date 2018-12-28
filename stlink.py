@@ -55,8 +55,9 @@ def find_probe_and_sn():
     except FileNotFoundError:
         print('ST-LINK_CLI.exe is missing! Put in the same directory or add path into PATH.')
         return None
-    except subprocess.CalledProcessError:
-        print('No ST-Link is available!')
+
+    if 'No ST-LINK detected!' in stlink_output:
+        print('No ST-LINK detected!')
         return None
 
     for line in probe_list:
