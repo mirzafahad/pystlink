@@ -28,6 +28,7 @@ import re
 import subprocess
 from typing import List
 from infi.devicemanager import DeviceManager
+import win32com.client
 
 
 def find_probe_and_sn():
@@ -81,24 +82,24 @@ def find_com_and_sn():
         Example - stlink_list = [{'sn': 213sd12f, 'com': 'COM30'}, {'sn': 21af154s, 'com': 'COM95'}]
 
     """
-    no_of_comport = 0
-    dev_man = DeviceManager()
-    devices = dev_man.all_devices
+    serial_ports = list()
+    wmi = win32com.client.GetObject("winmgmts:")
+    for sp in wmi.InstancesOf("Win32_SerialPort"):
+    # pylint: disable=anomalous-backslash-in-string
+        if 'STMicroelectronics' in sp.name:
+            device = dict()
+            device['sn'] = re.findall('(USB\S+)\\\\', sp.PNPDeviceID)[0]
+            device['com'] = sp.DeviceID
+            serial_ports.append(device)
 
-    for device in devices:
-        # pylint: disable=anomalous-backslash-in-string
-        if re.search('^STMicroelectronics STLink Virtual COM Port', device.description):
-            com_port = re.findall('\(([A-Z0-9]+)\)', device.friendly_name)[0]
-            usb_serial_number = re.findall('PID_\S+\\\([A-Z0-9]+)', device.parent.instance_id)[0]
-        # pylint: enable=anomalous-backslash-in-string
+    for usb in wmi.InstancesOf("Win32_USBHub"):
+        device_id = re.findall('(USB\S+)\\\\', usb.DeviceID)[0]
+        for port in serial_ports:
+            if device_id in port['sn']:
+                port['sn'] = re.findall('PID_\S+\\\([A-Z0-9]+)', usb.DeviceID)[0]
+    # pylint: enable=anomalous-backslash-in-string
 
-            for stlink in stlink_list.values():
-                if stlink['sn'] == usb_serial_number:
-                    stlink['com'] = com_port
-                    no_of_comport += 1
-                    break
-
-    return no_of_comport
+    return serial_ports
 
 
 def flash(hex_file_path: str, probe: int = 0):
