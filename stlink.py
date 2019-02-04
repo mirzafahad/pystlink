@@ -37,10 +37,10 @@ def _find_probe_and_sn():
     The method uses ST-Link Utility's CLI interface to find ST-Link V2 programmers if there are any.
 
     Returns:
-        stlink_probe_list: A list of dictionaries consists of probe number and hardware serial
+        probe_list: A list of dictionaries consists of probe number and hardware serial
             number. If no ST-Link programmers can be found then the method will return None.
 
-        Example -> stlink_list = [{'sn': 213245154sdf, 'probe': 0}, {'sn': 21abc544sdf, 'probe': 1}]
+        Example -> probe_list = [{'probe': '0', 'sn': '213245154SDF'}, {'probe': '1', 'sn': '21ABC544SDF'}]
 
     Raises:
         FileNotFoundError: ST-Link Utility CLI isn't present in the current directory or on PATH.
@@ -77,13 +77,13 @@ def _find_port_and_sn():
     The method traverse through device manager to find ST-Link V2 programmers if there are any.
 
     Returns:
-        stlink_com_list: A list of dictionaries consists of com port number and hardware serial
+        com_list: A list of dictionaries consists of com port number and hardware serial
             number. If no ST-Link programmers can be found then the method will return None.
 
-        Example - stlink_list = [{'sn': 213sd12f, 'com': 'COM30'}, {'sn': 21af154s, 'com': 'COM95'}]
+        Example - com_list = [{'sn': '213SD12F', 'com': 'COM30'}, {'sn': '21AF154S', 'com': 'COM95'}]
 
     """
-    serial_ports = list()
+    com_list = list()
     wmi = win32com.client.GetObject("winmgmts:")
     for sp in wmi.InstancesOf("Win32_SerialPort"):
     # pylint: disable=anomalous-backslash-in-string
@@ -91,23 +91,38 @@ def _find_port_and_sn():
             device = dict()
             device['sn'] = re.findall('(USB\S+)\\\\', sp.PNPDeviceID)[0]
             device['com'] = sp.DeviceID
-            serial_ports.append(device)
+            com_list.append(device)
 
     for usb in wmi.InstancesOf("Win32_USBHub"):
         device_id = re.findall('(USB\S+)\\\\', usb.DeviceID)[0]
-        for port in serial_ports:
+        for port in com_list:
             if device_id in port['sn']:
                 port['sn'] = re.findall('PID_\S+\\\([A-Z0-9]+)', usb.DeviceID)[0]
     # pylint: enable=anomalous-backslash-in-string
 
-    return serial_ports
+    return com_list
 
 
 def findall():
-    stlink_list = list()
-    ports = __find_port_and_sn()
-    probes = __find_probe_and_sn()
+    """
+    Finds ST-Link programmer's COM port and Probe number.
 
+    The method maps ST-LINK debug serial com port with probe number.
+
+    Returns:
+        stlink_list: A list of dictionaries consists of com port number and probe number. If no ST-Link
+            programmers can be found then the method will return None.
+
+        Example - stlink_list = [{'probe': '0', 'com': 'COM30'}, {'probe': '1', 'com': 'COM95'}]
+
+    """
+    ports = _find_port_and_sn()
+    probes = _find_probe_and_sn()
+
+    if ports is None or probes is None:
+        return None
+
+    stlink_list = list()
     for probe in probes:
         for i, port in enumerate(ports):
             if probe['sn'] == port['sn']:
