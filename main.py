@@ -2,10 +2,9 @@
 
 import stlink
 
-
 if __name__ == '__main__':
     print(stlink.findall())
-    status, checksum = stlink.flash('G:\\test.hex', 0)
+    status, checksum = stlink.flash('G:\\test.hex')
     print(status)
 
 
