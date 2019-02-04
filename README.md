@@ -7,7 +7,7 @@ Python API to automate STMicroelectonics flash using ST-Link CLI Utility.
 
 #### Hardware used
 ST-Link V2 that comes with STMicroelectronics Nucleo development boards. These ST-Links
-also provides USB-to-Serial ports. 
+also provide USB-to-Serial ports. 
 
 ## How to use 
 There are only two public methods: 

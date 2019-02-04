@@ -3,7 +3,8 @@
 import stlink
 
 if __name__ == '__main__':
-    print(stlink.findall())
+    print(f'List of ST-Link: {stlink.findall()}')
+    print('Flashing:...', end='')
     status, checksum = stlink.flash('G:\\test.hex')
     print(status)
 
