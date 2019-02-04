@@ -59,13 +59,15 @@ def _find_probe_and_sn():
         print('No ST-LINK detected!')
         return None
 
-    stlink_probe_list = dict()
+    probe_list = list()
     for i, line in enumerate(stlink_output):
         if re.search('^ST-LINK Probe', line):
-            stlink_probe_list['probe'] = re.findall('([0-9]+):', line)[0]
-            stlink_probe_list['sn'] = re.findall('SN: ([A-Z0-9]+)', stlink_output[i + 1])[0]
+            device = dict()
+            device['probe'] = re.findall('([0-9]+):', line)[0]
+            device['sn'] = re.findall('SN: ([A-Z0-9]+)', stlink_output[i + 1])[0]
+            probe_list.append(device)
 
-    return stlink_probe_list
+    return probe_list
 
 
 def _find_port_and_sn():
