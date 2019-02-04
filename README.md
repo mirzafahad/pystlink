@@ -2,14 +2,14 @@
 Python API to automate STMicroelectonics flash using ST-Link CLI Utility.
 
 #### Required Packages:
-<li>pywin32
-<li>pypiwin32
+- pywin32
+- pypiwin32
 
 #### Hardware used
 ST-Link V2 that comes with STMicroelectronics Nucleo development boards. These ST-Links
 also provides USB-to-Serial ports. 
 
-### How to use 
+## How to use 
 There are only two public methods: 
   - **findall()**<br>
   This method returns all the ST-Link Probe number and corresponding COM port number.
