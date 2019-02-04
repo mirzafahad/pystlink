@@ -5,21 +5,21 @@ Python API to automate STMicroelectonics flash using ST-Link CLI Utility.
 <li>pywin32
 <li>pypiwin32
 
-####Hardware used
+#### Hardware used
 ST-Link V2 that comes with STMicroelectronics Nucleo development boards. These ST-Links
 also provides USB-to-Serial ports. 
 
-###How to use 
+### How to use 
 There are only two public methods: 
-  <li> findall()<br>
+  <li> **findall()**<br>
   This method returns all the ST-Link Probe number and corresponding COM port number.
-  <li> flash(hex_path, probe_no)<br>
-  This method takes the hex file path and the probe number (default = 0). It returns status
+  <li> **flash(hex_path, probe_no)**<br>
+  This method takes the hex file path and the probe number (*default = 0*). It returns status
   ('successful' / 'failed') and the checksum of the hex/binary file. 
   
   <br>
 
-####Example
+#### Example
   ```buildoutcfg
 import stlink
 
