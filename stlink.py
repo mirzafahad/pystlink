@@ -103,6 +103,21 @@ def _find_port_and_sn():
     return serial_ports
 
 
+def findall():
+    stlink_list = list()
+    ports = __find_port_and_sn()
+    probes = __find_probe_and_sn()
+
+    for probe in probes:
+        for i, port in enumerate(ports):
+            if probe['sn'] == port['sn']:
+                stlink_list.append({'probe': probe['probe'], 'com': port['com']})
+                del ports[i]
+                break
+
+    return stlink_list
+
+
 def flash(hex_file_path: str, probe: int = 0):
     """
     Flashes microcontroller.
