@@ -68,7 +68,7 @@ def find_probe_and_sn():
     return stlink_probe_list
 
 
-def find_stlink_com_and_sn(stlink_list):
+def find_com_and_sn():
     """
     Finds ST-Link programmer's COM port and hardware serial number.
 
