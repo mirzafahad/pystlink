@@ -27,11 +27,10 @@ SOFTWARE.
 import re
 import subprocess
 from typing import List
-from infi.devicemanager import DeviceManager
 import win32com.client
 
 
-def find_probe_and_sn():
+def _find_probe_and_sn():
     """
     Finds ST-Link programmer's probe and hardware serial number.
 
@@ -69,7 +68,7 @@ def find_probe_and_sn():
     return stlink_probe_list
 
 
-def find_com_and_sn():
+def _find_port_and_sn():
     """
     Finds ST-Link programmer's COM port and hardware serial number.
 
