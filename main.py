@@ -7,5 +7,3 @@ if __name__ == '__main__':
     print('Flashing:...', end='')
     status, checksum = stlink.flash('G:\\test.hex')
     print(status)
-
-

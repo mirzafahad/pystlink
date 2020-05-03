@@ -3,8 +3,6 @@ ST-Link CLI Interface
 
 The MIT License (MIT)
 
-Copyright (c) 2016 mtchavez
-
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
@@ -12,8 +10,6 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -40,7 +36,7 @@ def _find_probe_and_sn():
         probe_list: A list of dictionaries consists of probe number and hardware serial
             number. If no ST-Link programmers can be found then the method will return None.
 
-        Example -> probe_list = [{'probe': '0', 'sn': '213245154SDF'}, {'probe': '1', 'sn': '21ABC544SDF'}]
+        Example -> probe_list = [{'probe': '0', 'sn': '21324515'}, {'probe': '1', 'sn': '21ABC54'}]
 
     Raises:
         FileNotFoundError: ST-Link Utility CLI isn't present in the current directory or on PATH.
@@ -80,17 +76,20 @@ def _find_port_and_sn():
         com_list: A list of dictionaries consists of com port number and hardware serial
             number. If no ST-Link programmers can be found then the method will return None.
 
-        Example - com_list = [{'sn': '213SD12F', 'com': 'COM30'}, {'sn': '21AF154S', 'com': 'COM95'}]
+        Example:
+        com_list = [{'sn': '213SD12F', 'com': 'COM30'}, {'sn': '21AF154S', 'com': 'COM95'}]
 
     """
     com_list = list()
     wmi = win32com.client.GetObject("winmgmts:")
-    for sp in wmi.InstancesOf("Win32_SerialPort"):
+
     # pylint: disable=anomalous-backslash-in-string
-        if 'STMicroelectronics' in sp.name:
+    for serial_port in wmi.InstancesOf("Win32_SerialPort"):
+
+        if 'STMicroelectronics' in serial_port.name:
             device = dict()
-            device['sn'] = re.findall('(USB\S+)\\\\', sp.PNPDeviceID)[0]
-            device['com'] = sp.DeviceID
+            device['sn'] = re.findall('(USB\S+)\\\\', serial_port.PNPDeviceID)[0]
+            device['com'] = serial_port.DeviceID
             com_list.append(device)
 
     for usb in wmi.InstancesOf("Win32_USBHub"):
@@ -98,8 +97,8 @@ def _find_port_and_sn():
         for port in com_list:
             if device_id in port['sn']:
                 port['sn'] = re.findall('PID_\S+\\\([A-Z0-9]+)', usb.DeviceID)[0]
-    # pylint: enable=anomalous-backslash-in-string
 
+    # pylint: enable=anomalous-backslash-in-string
     return com_list
 
 
@@ -110,8 +109,8 @@ def findall():
     The method maps ST-LINK debug serial com port with probe number.
 
     Returns:
-        stlink_list: A list of dictionaries consists of com port number and probe number. If no ST-Link
-            programmers can be found then the method will return None.
+        stlink_list: A list of dictionaries consists of com port number and probe number.
+            If no ST-Link programmers can be found then the method will return None.
 
         Example - stlink_list = [{'probe': '0', 'com': 'COM30'}, {'probe': '1', 'com': 'COM95'}]
 
@@ -186,4 +185,3 @@ def _check_flash_output(output: List[str]):
                 break
 
     return flash_status, checksum
-
