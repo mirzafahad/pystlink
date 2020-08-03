@@ -1,4 +1,9 @@
 # ST-Link Utility Automation
+[![License](https://img.shields.io/badge/license-MIT-red)](https://opensource.org/licenses/MIT)
+[![Blog](https://img.shields.io/badge/blog-post-yellow)](https://mirzafahad.github.io/2019-01-11-stlink-utility/)
+
+:star: Star me on GitHub — it helps!
+
 Python API to automate STMicroelectonics flash using ST-Link CLI Utility.
 
 #### Required Packages:
@@ -17,8 +22,7 @@ Make sure to add the "ST-LINK_CLI.exe" 's directory in the PATH.
 Check ST-Link Utility guide.
 
 ## How to install and use 
-There aren't any installations. Clone the repository and use the methods.
-There are only two public methods: 
+There aren't any installations. Clone the repository and use the methods. There are only two public methods: 
   - **findall()**<br>
   This method returns all the ST-Link Probe number and corresponding COM port number.
   - **flash(hex_path, probe_no)**<br>
@@ -28,7 +32,7 @@ There are only two public methods:
 
 
 #### Example
-  ```buildoutcfg
+```python
 import stlink
 
 if __name__ == '__main__':
@@ -38,10 +42,7 @@ if __name__ == '__main__':
 ```
 
 Output:
-```buildoutcfg
+```python
 [{'probe': '0', 'com': 'COM4'}]
 successful
 ```
-
-## TAGS
-ST-Link/V2, stlink, SWD, Python, ARM, CortexM, STM32, FLASH, USB
